@@ -105,7 +105,6 @@ Router.post('/forgetpass', async (req, res) => {
 
 // });
 
-
 Router.post('/otpsend', async (req, res) => {
   const { username } = req.body;
 
