@@ -41,36 +41,116 @@ Router.post('/forgetpass', async (req, res) => {
 
 //*****************OTPsend*********************/
 
-Router.post('/otpsend', async (req, res) => {
+// Router.post('/otpsend', async (req, res) => {
 
+//   pool.getConnection(async (err, conn) => {
+//     if (err) {
+//       console.log(err);
+//       res.status(500).send('Server Error');
+//     }
+//     else {
+//       var otp = Math.random() * (1000000 - 99999) + 99999;
+
+//       var random = parseInt(otp);
+//       var a = random.toString();
+//       console.log(a);
+
+//       var username = req.body.username;
+
+//       var clientPort = 465;
+//       var clientSmtp = 'smtp.hostinger.com';
+//     //   var clientReply = 'Dwellfox'
+  
+//       var useSmtp = clientSmtp ? clientSmtp : 'smtp.hostinger.com';
+//       var usePort = clientPort ? clientPort : 465;
+
+//       var mailData = {
+//         from: {
+//             name:'New Inquiry From Dwellfox.com',
+//             address:'donotreply@dwellfox.com'
+//       },
+//         to: username,
+//         subject: "Otp for forget password is: ",
+//         html: "<h3>OTP for account verification is </h3>" + "<h1 style='font-weight:bold;'>" + a + "</h1>"
+//       };
+
+//       conn.query(`UPDATE identities SET otp=${a} WHERE username ="${username}"`, function (err) {
+//         if (err) {
+//           res.send({ result: err });
+//         } else {
+//           res.send({ result: "update successfull" });
+//         }
+
+//       });
+//       const transporter = nodemailer.createTransport({
+//         port: usePort, // true for 465, false for other ports
+//         host: useSmtp,
+//         auth: {
+//           user: "donotreply@dwellfox.com",
+//           pass: "*rZ2ifIA5Lv",
+//         },
+//         secure: true,
+//       });
+//       transporter.sendMail(mailData, function (err, info) {
+//         if (err) {
+//           console.log(err);
+//           res.send(`{"message":"Sending Failed!"}`);
+//         } else {
+//           res.send(`{"message":"Successfully Sent!"}`);
+//         }
+//       });
+//       pool.releaseConnection(conn);
+//     }
+//   })
+
+// });
+
+
+Router.post('/otpsend', async (req, res) => {
+  const { username } = req.body;
+
+  // Check if the username is provided
+  if (!username) {
+    return res.status(400).json({ error: 'Username is required.' });
+  }
+
+  // Check if the user exists in the database
   pool.getConnection(async (err, conn) => {
     if (err) {
       console.log(err);
-      res.status(500).send('Server Error');
+      return res.status(500).json({ error: 'Server Error' });
     }
-    else {
-      var otp = Math.random() * (1000000 - 99999) + 99999;
 
+    conn.query('SELECT * FROM identities WHERE username = ?', [username], (err, results) => {
+      if (err) {
+        console.error('Failed to fetch user from the database', err);
+        return res.status(500).json({ error: 'Internal server error' });
+      }
+
+      if (results.length === 0) {
+        // User is not registered
+        return res.status(404).json({ error: 'User not registered.' });
+      }
+
+      // User is registered, generate and send OTP
+      var otp = Math.random() * (1000000 - 99999) + 99999;
       var random = parseInt(otp);
       var a = random.toString();
-      console.log(a);
-
-      var username = req.body.username;
 
       var clientPort = 465;
       var clientSmtp = 'smtp.hostinger.com';
-    //   var clientReply = 'Dwellfox'
+      // var clientReply = 'Dwellfox'
   
       var useSmtp = clientSmtp ? clientSmtp : 'smtp.hostinger.com';
       var usePort = clientPort ? clientPort : 465;
 
       var mailData = {
         from: {
-            name:'New Inquiry From Dwellfox.com',
-            address:'donotreply@dwellfox.com'
-      },
+          name: 'New Inquiry From Dwellfox.com',
+          address: 'donotreply@dwellfox.com'
+        },
         to: username,
-        subject: "Otp for forget password is: ",
+        subject: "OTP for forget password is: ",
         html: "<h3>OTP for account verification is </h3>" + "<h1 style='font-weight:bold;'>" + a + "</h1>"
       };
 
@@ -78,31 +158,30 @@ Router.post('/otpsend', async (req, res) => {
         if (err) {
           res.send({ result: err });
         } else {
-          res.send({ result: "update successfull" });
+          // OTP update successful, send email
+          const transporter = nodemailer.createTransport({
+            port: usePort, // true for 465, false for other ports
+            host: useSmtp,
+            auth: {
+              user: "donotreply@dwellfox.com",
+              pass: "*rZ2ifIA5Lv",
+            },
+            secure: true,
+          });
+          transporter.sendMail(mailData, function (err, info) {
+            if (err) {
+              console.log(err);
+              return res.status(500).json({ error: 'Sending Failed!' });
+            } else {
+              return res.status(200).json({ message: 'Successfully Sent!' });
+            }
+          });
         }
+      });
 
-      });
-      const transporter = nodemailer.createTransport({
-        port: usePort, // true for 465, false for other ports
-        host: useSmtp,
-        auth: {
-          user: "donotreply@dwellfox.com",
-          pass: "*rZ2ifIA5Lv",
-        },
-        secure: true,
-      });
-      transporter.sendMail(mailData, function (err, info) {
-        if (err) {
-          console.log(err);
-          res.send(`{"message":"Sending Failed!"}`);
-        } else {
-          res.send(`{"message":"Successfully Sent!"}`);
-        }
-      });
       pool.releaseConnection(conn);
-    }
+    })
   })
-
 });
 
 //****************Verify*********************//
