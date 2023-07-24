@@ -11,6 +11,7 @@ import resetPasswordRoute from './routes/resetPassword.js'
 import changepassRoute from './routes/changepass.js'
 import dispatcherRoute from './routes/dispatcher.js'
 import driverRoute from './routes/driver.js'
+import login1Route from './routes/login1.js'
 
 
 const app = express()
@@ -31,6 +32,9 @@ app.get("/", (req, res) => {
 
 app.use('/signup',signupRoute);
 app.use('/login',loginRoute);
+app.use('/api',login1Route);
+
+
 app.use('/forgetpassword',resetPasswordRoute);
 app.use('/changepass',changepassRoute);
 app.use('/dispatcher',dispatcherRoute);
