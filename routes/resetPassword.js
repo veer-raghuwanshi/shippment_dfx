@@ -11,7 +11,7 @@ import nodemailer from "nodemailer";
 const pool = mysql.createPool({
     host: '89.117.27.154', // Replace with your host name
     // port: '3306',
-    user: 'u219507986_shipment',      // Replace with your database username
+    user: 'u219507986_shipment',      // Replace with your database email
     password: '123456Ak',      // Replace with your database password    ///df-opcity-home
     database: 'u219507986_shipment'
 });
@@ -23,8 +23,8 @@ Router.post('/forgetpass', async (req, res) => {
       res.status(500).send('Server Error');
     }
     else {
-      var user_name = req.body.username;
-      conn.query("SELECT * FROM identities WHERE username=?", user_name, function (err, data) {
+      var email = req.body.email;
+      conn.query("SELECT * FROM driver WHERE email=?", email, function (err, data) {
         if (err) {
           console.log(err);
           res.send({ result: "err", Error: err });
@@ -55,7 +55,7 @@ Router.post('/forgetpass', async (req, res) => {
 //       var a = random.toString();
 //       console.log(a);
 
-//       var username = req.body.username;
+//       var email = req.body.email;
 
 //       var clientPort = 465;
 //       var clientSmtp = 'smtp.hostinger.com';
@@ -69,12 +69,12 @@ Router.post('/forgetpass', async (req, res) => {
 //             name:'New Inquiry From Dwellfox.com',
 //             address:'donotreply@dwellfox.com'
 //       },
-//         to: username,
+//         to: email,
 //         subject: "Otp for forget password is: ",
 //         html: "<h3>OTP for account verification is </h3>" + "<h1 style='font-weight:bold;'>" + a + "</h1>"
 //       };
 
-//       conn.query(`UPDATE identities SET otp=${a} WHERE username ="${username}"`, function (err) {
+//       conn.query(`UPDATE identities SET otp=${a} WHERE email ="${email}"`, function (err) {
 //         if (err) {
 //           res.send({ result: err });
 //         } else {
@@ -106,11 +106,11 @@ Router.post('/forgetpass', async (req, res) => {
 // });
 
 Router.post('/otpsend', async (req, res) => {
-  const { username } = req.body;
+  const { email } = req.body;
 
-  // Check if the username is provided
-  if (!username) {
-    return res.status(400).json({ error: 'Username is required.' });
+  // Check if the email is provided
+  if (!email) {
+    return res.status(400).json({ error: 'email is required.' });
   }
 
   // Check if the user exists in the database
@@ -120,7 +120,7 @@ Router.post('/otpsend', async (req, res) => {
       return res.status(500).json({ error: 'Server Error' });
     }
 
-    conn.query('SELECT * FROM identities WHERE username = ?', [username], (err, results) => {
+    conn.query('SELECT * FROM driver WHERE email=?', [email], (err, results) => {
       if (err) {
         console.error('Failed to fetch user from the database', err);
         return res.status(500).json({ error: 'Internal server error' });
@@ -148,12 +148,12 @@ Router.post('/otpsend', async (req, res) => {
           name: 'New Inquiry From Dwellfox.com',
           address: 'donotreply@dwellfox.com'
         },
-        to: username,
+        to: email,
         subject: "OTP for forget password is: ",
         html: "<h3>OTP for account verification is </h3>" + "<h1 style='font-weight:bold;'>" + a + "</h1>"
       };
 
-      conn.query(`UPDATE identities SET otp=${a} WHERE username ="${username}"`, function (err) {
+      conn.query(`UPDATE driver SET otp=${a} WHERE email ="${email}"`, function (err) {
         if (err) {
           res.send({ result: err });
         } else {
@@ -192,10 +192,10 @@ Router.post('/verify', async (req, res) => {
       res.status(500).send('Server Error');
     }
     else {
-      var username = req.body.username;
+      var email = req.body.email;
       var otp = req.body.otp;
 
-      conn.query(`SELECT * FROM identities WHERE username="${username}" AND otp=${otp}`, function (err, otp) {
+      conn.query(`SELECT * FROM driver WHERE email="${email}" AND otp=${otp}`, function (err, otp) {
         if (err) {
           res.send({ result: err });
         } else {
@@ -217,7 +217,7 @@ Router.post('/verify-otp', (req, res) => {
     const {otp } = req.body; // Assuming the phone number and OTP are sent in the request body
   
     // Check if the OTP is valid for the given phone number
-    const query = 'SELECT * FROM identities WHERE  otp = ?';
+    const query = 'SELECT * FROM driver WHERE  otp = ?';
   
     pool.query(query, [otp], (error, results) => {
       if (error) {
@@ -239,16 +239,16 @@ Router.post('/verify-otp', (req, res) => {
 //////
 
 Router.post('/reset-password', (req, res) => {
-    const { username, newPassword, confirmPassword } = req.body;
+    const { email, newPassword, confirmPassword } = req.body;
   
     if (newPassword !== confirmPassword) {
       return res.status(400).json({ error: 'New password and confirm password do not match' });
     }
   
     // Save the new password in the database for the given user
-    const query = 'UPDATE identities SET password = ? WHERE username = ?';
+    const query = 'UPDATE driver SET password = ? WHERE email = ?';
   
-    pool.query(query, [newPassword, username], (error, results) => {
+    pool.query(query, [newPassword, email], (error, results) => {
       if (error) {
         console.error('Error resetting password:', error);
         res.status(500).json({ error: 'Error resetting password' });
@@ -267,15 +267,15 @@ Router.post('/resetpassword', async (req, res) => {
       res.status(500).send('Server Error');
     }
     else {
-      var username = req.body.username;
+      var email = req.body.email;
       var password = req.body.password;
 
-      conn.query(`UPDATE identities SET password="${password}" WHERE username="${username}"`, function (err,password) {
+      conn.query(`UPDATE driver SET password="${password}" WHERE email="${email}"`, function (err,password) {
         if (err) {
           res.send({ result: err });
           if (!password) {
-            console.log('Incorrect username error.');
-            return done(null, false, { message: 'Incorrect username.' });
+            console.log('Incorrect email error.');
+            return done(null, false, { message: 'Incorrect email.' });
         }
         console.log('Trying user.validPassword() call');
         if (!password.validPassword(password)) {
@@ -297,18 +297,18 @@ Router.post('/resetpassword', async (req, res) => {
 //////////////////////////////////////
 
 Router.post('/change-password', async (req, res) => {
-    const { username, newPassword, confirmPassword } = req.body;
+    const { email, newPassword, confirmPassword } = req.body;
     if (newPassword !== confirmPassword) {
       return res.status(400).json({ error: 'Passwords do not match' });
     }
     try {
       // Check if the email exists in the database
-      const [users] = await pool.query('SELECT * FROM identities WHERE username = ?', [username]);
+      const [users] = await pool.query('SELECT * FROM driver WHERE email = ?', [email]);
       if (users.length === 0) {
         return res.status(404).json({ error: 'User not found' });
       }
       // Update the user's password in the database
-      await pool.query('UPDATE identities SET password = ? WHERE username = ?', [newPassword, username]);
+      await pool.query('UPDATE driver SET password = ? WHERE email = ?', [newPassword, email]);
       res.status(200).json({ message: 'Password updated successfully' });
     } catch (error) {
       console.error('Error changing password:', error);
@@ -318,25 +318,25 @@ Router.post('/change-password', async (req, res) => {
 
   ///////
   Router.post('/reset-password1', (req, res) => {
-    const { username, newPassword, confirmPassword } = req.body;
+    const { email, newPassword, confirmPassword } = req.body;
     // Check if the new password and confirm password match
     if (newPassword !== confirmPassword) {
       return res.status(400).json({ error: 'New password and confirm password do not match !' });
     }
-    // Check if the username exists in the database
-    const selectQuery = 'SELECT * FROM identities WHERE username = ?';
-    pool.query(selectQuery, [username], (selectError, selectResults) => {
+    // Check if the email exists in the database
+    const selectQuery = 'SELECT * FROM driver WHERE email = ?';
+    pool.query(selectQuery, [email], (selectError, selectResults) => {
       if (selectError) {
         console.error('Error executing select query:', selectError);
         return res.status(500).json({ error: 'Error resetting password' });
       }
-      // If the username does not exist, return an error
+      // If the email does not exist, return an error
       if (selectResults.length === 0) {
         return res.status(404).json({ error: 'User not found !' });
       }
       // Update the password in the database for the given user
-      const updateQuery = 'UPDATE identities SET password = ? WHERE username = ?';
-      pool.query(updateQuery, [newPassword, username], (updateError, updateResults) => {
+      const updateQuery = 'UPDATE driver SET password = ? WHERE email = ?';
+      pool.query(updateQuery, [newPassword, email], (updateError, updateResults) => {
         if (updateError) {
           console.error('Error resetting password:', updateError);
           return res.status(500).json({ error: 'Error resetting password' });
