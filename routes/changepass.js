@@ -14,7 +14,7 @@ import nodemailer from "nodemailer";
 const pool = mysql.createPool({
     host: '89.117.27.154', // Replace with your host name
    // port: '3306',
-   user: 'u219507986_shipment',      // Replace with your database username
+   user: 'u219507986_shipment',      // Replace with your database email
    password: '123456Ak',      // Replace with your database password    ///df-opcity-home
    database: 'u219507986_shipment'
 });
@@ -23,33 +23,33 @@ const pool = mysql.createPool({
 // Change password endpoint
 Router.post('/change-password', (req, res) => {
   pool.getConnection(async (err, conn) => {
-  const { username, oldPassword, newPassword } = req.body;
-  // Check if the username and passwords are provided
-  if (!username || !oldPassword || !newPassword) {
-    return res.status(400).json({ error: 'Missing required fields' });
+  const { email, oldPassword, newPassword } = req.body;
+  // Check if the email and passwords are provided
+  if (!email || !oldPassword || !newPassword) {
+    return res.status(400).json({ status:"400", error: 'Missing required fields' });
   }
   // Fetch user from the database
-  conn.query('SELECT * FROM identities WHERE username = ?', [username], (err, results) => {
+  conn.query('SELECT * FROM driver WHERE email = ?', [email], (err, results) => {
     if (err) {
       console.error('Failed to fetch user from the database', err);
-      return res.status(500).json({ error: 'Internal server error' });
+      return res.status(500).json({status:"500" ,error: 'Internal server error' });
     }
     // Check if the user exists
     if (results.length === 0) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ status:"404", error: 'User not found' });
     }
     const user = results[0];
     // Check if the old password matches
     if (user.password !== oldPassword) {
-      return res.status(401).json({ error: 'Invalid old password' });
+      return res.status(401).json({status:"401" ,error: 'Invalid old password' });
     }
     // Update the user's password
-    conn.query('UPDATE identities SET password = ? WHERE username = ?', [newPassword, username], (err) => {
+    conn.query('UPDATE driver SET password = ? WHERE email = ?', [newPassword, email], (err) => {
       if (err) {
         console.error('Failed to update user password', err);
-        return res.status(500).json({ error: 'Internal server error' });
+        return res.status(500).json({ status:"500" ,error: 'Internal server error' });
       }
-      return res.status(200).json({ message: 'Password updated successfully' });
+      return res.status(200).json({status:"200" , message: 'Password updated successfully' });
     });
 
     var clientPort = 465;
@@ -64,7 +64,7 @@ Router.post('/change-password', (req, res) => {
             name:'New Inquiry From Dwellfox.com',
             address:'donotreply@dwellfox.com'
       },
-        to: username, // list of receivers
+        to: email, // list of receivers
       subject: "Admin Password change",
       text: 'That was easy!',
       html:`<!DOCTYPE html>
