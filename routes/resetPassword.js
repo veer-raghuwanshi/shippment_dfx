@@ -170,9 +170,9 @@ Router.post('/otpsend', async (req, res) => {
           transporter.sendMail(mailData, function (err, info) {
             if (err) {
               console.log(err);
-              return res.status(500).json({ error: 'Sending Failed!' });
+              return res.status(500).json({status:"500", error: 'Sending Failed!' });
             } else {
-              return res.status(200).json({ message: 'Successfully Sent!' });
+              return res.status(200).json({ status:"200", message: 'Successfully Sent!' });
             }
           });
         }
@@ -227,10 +227,10 @@ Router.post('/verify-otp', (req, res) => {
         if (results.length > 0) {
           // Valid OTP
           // You can add additional logic here, like checking OTP expiration time
-          res.status(200).json({  flag: 1 });
+          res.status(200).json({status:"200",message:"send success" });
         } else {
           // Invalid OTP
-          res.status(401).json({  flag: 0});
+          res.status(401).json({ status:"401",message:"otp invalid"});
         }
       }
     });
@@ -339,9 +339,9 @@ Router.post('/change-password', async (req, res) => {
       pool.query(updateQuery, [newPassword, email], (updateError, updateResults) => {
         if (updateError) {
           console.error('Error resetting password:', updateError);
-          return res.status(500).json({ error: 'Error resetting password' });
+          return res.status(500).json({ status:"500", error: 'Error resetting password' });
         }
-        res.status(200).json({ message: 'Password reset successfully' });
+        res.status(200).json({ status:"200", message: 'Password reset successfully' });
       });
     });
   });
