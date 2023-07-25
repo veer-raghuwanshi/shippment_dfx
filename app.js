@@ -13,6 +13,12 @@ import dispatcherRoute from './routes/dispatcher.js'
 import driverRoute from './routes/driver.js'
 import login1Route from './routes/login1.js'
 
+import createShipmentRoute from './routes/createShipment.js'
+import helperRoute from './routes/helper.js'
+import vehicalRoute from './routes/vehical.js'
+
+
+
 
 const app = express()
 const PORT = process.env.PORT || 5000
@@ -33,13 +39,14 @@ app.get("/", (req, res) => {
 app.use('/signup',signupRoute);
 app.use('/login',loginRoute);
 app.use('/api',login1Route);
-
-
 app.use('/api',resetPasswordRoute);
 app.use('/api',changepassRoute);
-app.use('/dispatcher',dispatcherRoute);
-app.use('/driver',driverRoute);
-// app.use('/apidomain',domainRoute);
+app.use('/api',dispatcherRoute);
+app.use('/api',driverRoute);
+app.use('/api',createShipmentRoute);
+app.use('/api',helperRoute);
+app.use('/api',vehicalRoute);
+
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}.`);
   });

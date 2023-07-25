@@ -7,7 +7,7 @@ import path from "path";
 import fs from "fs";
 
 
-Router.get('/dispatcher', async (req, res) => {
+Router.get('/createshipment', async (req, res) => {
     pool.getConnection(async (err, conn) => {
         if (err) {
             console.log(err);
@@ -15,7 +15,7 @@ Router.get('/dispatcher', async (req, res) => {
           } 
           else{
               const id = req.body.id;
-              const sql = `SELECT * from dispatcher `;
+              const sql = `SELECT * from customer `;
               const result = await query(sql, conn);
             //   console.log(result)
               if(result){
@@ -28,20 +28,35 @@ Router.get('/dispatcher', async (req, res) => {
     })
 })
 
+//*********************************************** */
+const generateRandomId = () => {
+    return Math.floor(Math.random() * 90000) + 1;
+  };
+//*********************************************** */
+
 //POST
-Router.post('/addispatcher', async (req, res) => {
+Router.post('/addcreatshipment', async (req, res) => {
     pool.getConnection(async (err, conn) => {
         if (err) {
             console.log(err);
             res.status(500).send('Server Error');
           } 
           else{
-              const name = req.body.name;
-              const email = req.body.email;
-              const phone = req.body.phone;
-              const password = req.body.password;
-            const sql = `INSERT INTO dispatcher (name,email,phone,password)
-            VALUES ('${name}','${email}','${phone}','${password}')`
+            
+            const  randomId = generateRandomId();
+              const custoname = req.body.custoname;
+              const custocontactnum = req.body.custocontactnum;
+              const custoemail = req.body.custoemail;
+              const custoaltnum = req.body.custoaltnum;
+              const pickuplocation = req.body.pickuplocation;
+              const droplocation = req.body.droplocation;
+              const description = req.body.description;
+              const shipwork = req.body.shipwork;
+
+
+            const sql = `INSERT INTO customer (id,custoname,custocontactnum,custoemail,custoaltnum,pickuplocation,droplocation,description,shipwork)
+            VALUES (${randomId},'${custoname}','${custocontactnum}','${custoemail}','${custoaltnum}','${pickuplocation}','${droplocation}','${description}','${shipwork}')`
+            // const values = [randomId];
               const result = await query(sql, conn);
               if(result){
                   res.send({result:"successfully added"});
@@ -56,7 +71,7 @@ Router.post('/addispatcher', async (req, res) => {
 
 //PUT METHOD
 
-Router.post('/updatedispatcher',async (req, res) => {
+Router.post('/updatecreatshipment',async (req, res) => {
     pool.getConnection(async (err, conn) => {
         if (err) {
             console.log(err);
@@ -64,10 +79,11 @@ Router.post('/updatedispatcher',async (req, res) => {
           } 
           else{
             const id = req.body.id;
-            const name = req.body.name;
-            const email = req.body.email;
-            const phone = req.body.phone;
-              const sql = `UPDATE dispatcher SET name="${name}", email="${email}", phone="${phone}" WHERE id=${id}`;
+            const vehicalplate = req.body.vehicalplate;
+            const helper1 = req.body.helper1;
+            const helper2 = req.body.helper2;
+            const assigndriver = req.body.assigndriver;
+              const sql = `UPDATE customer SET vehicalplate="${vehicalplate}", helper1="${helper1}", helper2="${helper2}", assigndriver="${assigndriver}" WHERE id=${id}`;
               const result = await query(sql, conn);
               if(result){
                   res.send({result:"successfully updated"});     
@@ -81,7 +97,7 @@ Router.post('/updatedispatcher',async (req, res) => {
     })
 })
 
-Router.post('/deldispatcher',async(req,res)=>{
+Router.post('/delcreatshipment',async(req,res)=>{
     pool.getConnection(async(err,conn) =>{
         if (err) {
             console.log(err);
@@ -91,7 +107,7 @@ Router.post('/deldispatcher',async(req,res)=>{
             const ID = req.body.id;
             const full_name = req.body.full_name;
             console.log(ID);
-            const sql = `DELETE FROM dispatcher WHERE id=${ID}`;
+            const sql = `DELETE FROM customer WHERE id=${ID}`;
             const result = await query(sql, conn);
             if(result){
                 res.send("successfully deleted");

@@ -7,7 +7,7 @@ import path from "path";
 import fs from "fs";
 
 
-Router.get('/dispatcher', async (req, res) => {
+Router.get('/createhelper', async (req, res) => {
     pool.getConnection(async (err, conn) => {
         if (err) {
             console.log(err);
@@ -15,7 +15,7 @@ Router.get('/dispatcher', async (req, res) => {
           } 
           else{
               const id = req.body.id;
-              const sql = `SELECT * from dispatcher `;
+              const sql = `SELECT * from helper `;
               const result = await query(sql, conn);
             //   console.log(result)
               if(result){
@@ -28,20 +28,31 @@ Router.get('/dispatcher', async (req, res) => {
     })
 })
 
+//*********************************************** */
+const generateRandomId = () => {
+    return Math.floor(Math.random() * 90000) + 1;
+  };
+//*********************************************** */
+
 //POST
-Router.post('/addispatcher', async (req, res) => {
+Router.post('/addhelper', async (req, res) => {
     pool.getConnection(async (err, conn) => {
         if (err) {
             console.log(err);
             res.status(500).send('Server Error');
           } 
           else{
+            
+            const  randomId = generateRandomId();
               const name = req.body.name;
               const email = req.body.email;
+              const address = req.body.address;
               const phone = req.body.phone;
-              const password = req.body.password;
-            const sql = `INSERT INTO dispatcher (name,email,phone,password)
-            VALUES ('${name}','${email}','${phone}','${password}')`
+
+        
+            const sql = `INSERT INTO helper (id,name,email,address,phone)
+            VALUES (${randomId},'${name}','${email}','${address}','${phone}')`
+            // const values = [randomId];
               const result = await query(sql, conn);
               if(result){
                   res.send({result:"successfully added"});
@@ -56,7 +67,7 @@ Router.post('/addispatcher', async (req, res) => {
 
 //PUT METHOD
 
-Router.post('/updatedispatcher',async (req, res) => {
+Router.post('/updatehelper',async (req, res) => {
     pool.getConnection(async (err, conn) => {
         if (err) {
             console.log(err);
@@ -66,8 +77,10 @@ Router.post('/updatedispatcher',async (req, res) => {
             const id = req.body.id;
             const name = req.body.name;
             const email = req.body.email;
+            const address = req.body.address;
             const phone = req.body.phone;
-              const sql = `UPDATE dispatcher SET name="${name}", email="${email}", phone="${phone}" WHERE id=${id}`;
+
+              const sql = `UPDATE helper SET name="${name}", email="${email}", address="${address}",phone="${phone}" WHERE id=${id}`;
               const result = await query(sql, conn);
               if(result){
                   res.send({result:"successfully updated"});     
@@ -81,7 +94,7 @@ Router.post('/updatedispatcher',async (req, res) => {
     })
 })
 
-Router.post('/deldispatcher',async(req,res)=>{
+Router.post('/delhelper',async(req,res)=>{
     pool.getConnection(async(err,conn) =>{
         if (err) {
             console.log(err);
@@ -91,7 +104,7 @@ Router.post('/deldispatcher',async(req,res)=>{
             const ID = req.body.id;
             const full_name = req.body.full_name;
             console.log(ID);
-            const sql = `DELETE FROM dispatcher WHERE id=${ID}`;
+            const sql = `DELETE FROM helper WHERE id=${ID}`;
             const result = await query(sql, conn);
             if(result){
                 res.send("successfully deleted");
