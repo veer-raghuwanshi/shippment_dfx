@@ -296,7 +296,7 @@ Router.post('/resetpassword', async (req, res) => {
 
 //////////////////////////////////////
 
-Router.post('/change-password', async (req, res) => {
+Router.post('/change-password1', async (req, res) => {
     const { email, newPassword, confirmPassword } = req.body;
     if (newPassword !== confirmPassword) {
       return res.status(400).json({ status:"400" , error: 'Passwords do not match' });
