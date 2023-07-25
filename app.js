@@ -36,7 +36,7 @@ app.use('/api',login1Route);
 
 
 app.use('/api',resetPasswordRoute);
-app.use('/changepass',changepassRoute);
+app.use('/api',changepassRoute);
 app.use('/dispatcher',dispatcherRoute);
 app.use('/driver',driverRoute);
 // app.use('/apidomain',domainRoute);

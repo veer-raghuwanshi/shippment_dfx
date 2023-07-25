@@ -222,7 +222,7 @@ Router.post('/verify-otp', (req, res) => {
     pool.query(query, [otp], (error, results) => {
       if (error) {
         console.error('Error verifying OTP:', error);
-        res.status(500).json({ error: 'Error verifying OTP' });
+        res.status(500).json({status:"500", error: 'Error verifying OTP' });
       } else {
         if (results.length > 0) {
           // Valid OTP
@@ -299,20 +299,20 @@ Router.post('/resetpassword', async (req, res) => {
 Router.post('/change-password', async (req, res) => {
     const { email, newPassword, confirmPassword } = req.body;
     if (newPassword !== confirmPassword) {
-      return res.status(400).json({ error: 'Passwords do not match' });
+      return res.status(400).json({ status:"400" , error: 'Passwords do not match' });
     }
     try {
       // Check if the email exists in the database
       const [users] = await pool.query('SELECT * FROM driver WHERE email = ?', [email]);
       if (users.length === 0) {
-        return res.status(404).json({ error: 'User not found' });
+        return res.status(404).json({status:"404", error: 'User not found' });
       }
       // Update the user's password in the database
       await pool.query('UPDATE driver SET password = ? WHERE email = ?', [newPassword, email]);
-      res.status(200).json({ message: 'Password updated successfully' });
+      res.status(200).json({status:"200", message: 'Password updated successfully' });
     } catch (error) {
       console.error('Error changing password:', error);
-      res.status(500).json({ error: 'Error changing password' });
+      res.status(500).json({status:"500", error: 'Error changing password' });
     }
   });
 
@@ -321,18 +321,18 @@ Router.post('/change-password', async (req, res) => {
     const { email, newPassword, confirmPassword } = req.body;
     // Check if the new password and confirm password match
     if (newPassword !== confirmPassword) {
-      return res.status(400).json({ error: 'New password and confirm password do not match !' });
+      return res.status(400).json({status:"400" ,error: 'New password and confirm password do not match !' });
     }
     // Check if the email exists in the database
     const selectQuery = 'SELECT * FROM driver WHERE email = ?';
     pool.query(selectQuery, [email], (selectError, selectResults) => {
       if (selectError) {
         console.error('Error executing select query:', selectError);
-        return res.status(500).json({ error: 'Error resetting password' });
+        return res.status(500).json({ status:"500", error: 'Error resetting password' });
       }
       // If the email does not exist, return an error
       if (selectResults.length === 0) {
-        return res.status(404).json({ error: 'User not found !' });
+        return res.status(404).json({status:"404", error: 'User not found !' });
       }
       // Update the password in the database for the given user
       const updateQuery = 'UPDATE driver SET password = ? WHERE email = ?';
