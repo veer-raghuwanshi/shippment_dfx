@@ -215,27 +215,27 @@ Router.post('/verify', async (req, res) => {
 
 
 Router.post('/verify-otp', (req, res) => {
-    const {otp } = req.body; // Assuming the phone number and OTP are sent in the request body
-  
-    // Check if the OTP is valid for the given phone number
-    const query = 'SELECT * FROM driver WHERE  otp = ?';
-  
-    pool.query(query, [otp], (error, results) => {
-      if (error) {
-        console.error('Error verifying OTP:', error);
-        res.status(500).json({status:"500", error: 'Error verifying OTP' });
+  const { otp, email } = req.body; // Assuming the phone number and OTP are sent in the request body
+
+  // Check if the OTP is valid for the given email
+  const query = 'SELECT * FROM driver WHERE otp = ? AND email = ?';
+
+  pool.query(query, [otp, email], (error, results) => {
+    if (error) {
+      console.error('Error verifying OTP:', error);
+      res.status(500).json({ status: "500", error: 'Error verifying OTP' });
+    } else {
+      if (results.length > 0) {
+        // Valid OTP
+        // You can add additional logic here, like checking OTP expiration time
+        res.status(200).json({ status: "200", message: "send success" });
       } else {
-        if (results.length > 0) {
-          // Valid OTP
-          // You can add additional logic here, like checking OTP expiration time
-          res.status(200).json({status:"200",message:"send success" });
-        } else {
-          // Invalid OTP
-          res.status(401).json({ status:"401",message:"otp invalid"});
-        }
+        // Invalid OTP
+        res.status(401).json({ status: "401", message: "otp invalid" });
       }
-    });
+    }
   });
+});
 
 //////
 
