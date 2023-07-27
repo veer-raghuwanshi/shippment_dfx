@@ -106,85 +106,332 @@ Router.post('/forgetpass', async (req, res) => {
 
 // });
 
+// Router.post('/otpsend', async (req, res) => {
+//   const { email } = req.body;
+
+//   // Check if the email is provided
+//   if (!email) {
+//     return res.status(400).json({ error: 'email is required.' });
+//   }
+
+//   // Check if the user exists in the database
+//   pool.getConnection(async (err, conn) => {
+//     if (err) {
+//       console.log(err);
+//       return res.status(500).json({ error: 'Server Error' });
+//     }
+
+//     conn.query('SELECT * FROM driver WHERE email=?', [email], (err, results) => {
+//       if (err) {
+//         console.error('Failed to fetch user from the database', err);
+//         return res.status(500).json({ error: 'Internal server error' });
+//       }
+
+//       if (results.length === 0) {
+//         // User is not registered
+//         return res.status(404).json({ error: 'User not registered.' });
+//       }
+
+//       // User is registered, generate and send OTP
+//       var otp = Math.random() * (1000000 - 99999) + 99999;
+//       var random = parseInt(otp);
+//       var a = random.toString();
+
+//       var clientPort = 465;
+//       var clientSmtp = 'smtp.hostinger.com';
+//       // var clientReply = 'Dwellfox'
+  
+//       var useSmtp = clientSmtp ? clientSmtp : 'smtp.hostinger.com';
+//       var usePort = clientPort ? clientPort : 465;
+
+//       var mailData = {
+//         from: {
+//           name: 'New Inquiry From Dwellfox.com',
+//           address: 'donotreply@dwellfox.com'
+//         },
+//         to: email,
+//         subject: "OTP for forget password is: ",
+//         html: "<h3>OTP for account verification is </h3>" + "<h1 style='font-weight:bold;'>" + a + "</h1>"
+//       };
+
+//       conn.query(`UPDATE driver SET otp=${a} WHERE email ="${email}"`, function (err) {
+//         if (err) {
+//           res.send({ result: err });
+//         } else {
+//           // OTP update successful, send email
+//           const transporter = nodemailer.createTransport({
+//             port: usePort, // true for 465, false for other ports
+//             host: useSmtp,
+//             auth: {
+//               user: "donotreply@dwellfox.com",
+//               pass: "*rZ2ifIA5Lv",
+//             },
+//             secure: true,
+//           });
+//           transporter.sendMail(mailData, function (err, info) {
+//             if (err) {
+//               console.log(err);
+//               return res.status(500).json({status:"500", error: 'Sending Failed!' });
+//             } else {
+//               return res.status(200).json({ status:"200", message: 'Successfully Sent!' });
+//             }
+//           });
+//         }
+//       });
+
+//       pool.releaseConnection(conn);
+//     })
+//   })
+// });
+
+//****************Verify*********************//
+
 Router.post('/otpsend', async (req, res) => {
-  const { email } = req.body;
+  const {email} = req.body;
 
-  // Check if the email is provided
-  if (!email) {
-    return res.status(400).json({ error: 'email is required.' });
-  }
-
-  // Check if the user exists in the database
   pool.getConnection(async (err, conn) => {
     if (err) {
       console.log(err);
-      return res.status(500).json({ error: 'Server Error' });
+      res.status(500).send('Server Error');
     }
-
-    conn.query('SELECT * FROM driver WHERE email=?', [email], (err, results) => {
-      if (err) {
-        console.error('Failed to fetch user from the database', err);
-        return res.status(500).json({ error: 'Internal server error' });
-      }
-
-      if (results.length === 0) {
-        // User is not registered
-        return res.status(404).json({ error: 'User not registered.' });
-      }
-
-      // User is registered, generate and send OTP
+    else {
       var otp = Math.random() * (1000000 - 99999) + 99999;
+
       var random = parseInt(otp);
       var a = random.toString();
+      console.log(a);
+
+      var email = req.body.email;
 
       var clientPort = 465;
       var clientSmtp = 'smtp.hostinger.com';
-      // var clientReply = 'Dwellfox'
+    //   var clientReply = 'Dwellfox'
   
       var useSmtp = clientSmtp ? clientSmtp : 'smtp.hostinger.com';
       var usePort = clientPort ? clientPort : 465;
 
       var mailData = {
         from: {
-          name: 'New Inquiry From Dwellfox.com',
-          address: 'donotreply@dwellfox.com'
-        },
+            name:'New Inquiry From Dwellfox.com',
+            address:'donotreply@bumbbl.com'
+      },
         to: email,
-        subject: "OTP for forget password is: ",
-        html: "<h3>OTP for account verification is </h3>" + "<h1 style='font-weight:bold;'>" + a + "</h1>"
+        subject: "Otp for forget password is: ",
+        html: `<!DOCTYPE html>
+        <html>
+        
+        <head>
+           <meta charset="utf-8" />
+           <title>A simple, clean, and responsive HTML invoice template</title>
+           <style>
+              h1, h2, h3, h4, h5, h6, p {
+                 font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+              }
+        
+              .invoice-box {
+                 max-width: 700px;
+                 margin: auto;
+                 border-radius: 13px;
+                 border: 1px solid #1B2644;
+                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+                 font-size: 16px;
+                 line-height: 24px;
+        
+                 color: #555;
+              }
+        
+              .tabledata tr th {
+                 /* border: 1px solid #000; */
+                 font-size: 18px;
+                 padding: 10px;
+                 color: #000;
+                 font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+              }
+        
+              .tabledata tr td {
+                 border: 1px solid #BCCCFF;
+                 padding: 10px;
+                 font-size: 16px;
+                 color: #000;
+                 font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+              }
+        
+              .invoice-box table {
+                 width: 100%;
+                 line-height: inherit;
+                 text-align: left;
+              }
+        
+              .invoice-box table td {
+                 /* padding: 5px; */
+                 vertical-align: top;
+              }
+        
+              /* .invoice-box table tr td:nth-child(2) {
+                    text-align: right;
+                 } */
+              .invoice-box table tr.top table td {
+                 padding-bottom: 20px;
+              }
+        
+              .invoice-box table tr.top table td.title {
+                 font-size: 45px;
+                 line-height: 45px;
+                 color: #333;
+        
+              }
+        
+              /* .invoice-box table tr.information table td {
+                    padding-bottom: 40px;
+                 } */
+              .invoice-box table tr.heading td {
+                 background: #eee;
+                 border-bottom: 1px solid #ddd;
+                 font-weight: bold;
+              }
+        
+              .invoice-box table tr.details td {
+                 padding-bottom: 20px;
+              }
+              .invoice-box table tr.item td {
+                 border-bottom: 1px solid #eee;
+              }
+              .invoice-box table tr.item.last td {
+                 border-bottom: none;
+              }
+              .invoice-box table tr.total td:nth-child(2) {
+                 border-top: 2px solid #eee;
+                 font-weight: bold;
+              }
+              @media only screen and (max-width: 600px) {
+                 .invoice-box table tr.top table td {
+                    width: 100%;
+                    display: block;
+                    text-align: center;
+                 }
+                 .invoice-box table tr.information table td {
+                    width: 100%;
+                    display: block;
+                    text-align: center;
+                 }
+              }
+              /** RTL **/
+              .invoice-box.rtl {
+                 direction: rtl;
+                 font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+              }
+              .invoice-box.rtl table {
+                 text-align: right;
+              }
+              .invoice-box.rtl table tr td:nth-child(2) {
+                 text-align: left;
+              }
+              .tb_header {
+                 background-color: #000;
+                 color: #fff;
+                 border: 1px solid #000;
+                 font-weight: 500;
+              }
+              .all_details {
+                 text-align: right;
+                 /* border: 1px solid #000; */
+                 border-collapse: collapse;
+              }
+              .boldcolor {
+                 font-weight: bold;
+                 color: #000;
+                 text-align: right;
+        
+              }
+           </style>
+        </head>
+        <body>
+           <div class="invoice-box">
+              <table cellpadding="0" cellspacing="0">
+                 <tr class="top">
+                    <td colspan="2">
+                       <table style="background-color:#1B2644;border-radius: 13px 13px 0 0;">
+                          <tr>
+                              <td style="text-align: center; padding-top: 20px;">
+                                <!-- <img src="logo.png" alt=""> -->
+                                <img src="logo.png" alt="">
+                             </td>
+                          </tr>
+                       </table>
+                    </td>
+                 </tr>
+              </table>
+              <table cellpadding="0" cellspacing="0" style="padding: 0 50px;">
+                 <tr class="top">
+                    <td colspan="2">
+                       <table style=" margin-bottom: 0; margin-top: 10px;">
+                          <tr>
+        
+        
+                             <td style="vertical-align: middle; color: #000;">
+                                <h4 style="margin-bottom: 10px;">${email}</h4>
+                                <h3 style="margin-bottom: 10px;">Your Verification Code is</h3>
+                                <h2 style="margin-bottom: 10px;">${a}</h2>
+                            </td>
+                             <td style="text-align: end; padding-top: 20px;">
+                                <img src="Login-amico.png" />
+                                    
+                             </td>
+                          </tr>
+                       </table>
+                    </td>
+                 </tr>
+              </table>
+              <table style="padding: 0px 50px; ">
+                 <tr>
+                    <td style="color:#000">
+                       <p style=" margin-top: 0;">Please enter this code in the designated field on our website/app to complete the verification process. This step is crucial in protecting your account from unauthorized access and securing your personal information.
+                        If you did not request this verification code, please ignore this email. </p>
+        
+                       <h3 style="margin-bottom: 0; font-weight: 500;">Best regards,</h3>
+                       <h3 style="margin-top: 5px;">P & G Truckers Team</h3>
+                       
+                    </td>
+                 </tr>
+              </table>
+           </body>
+        </html>`
       };
 
-      conn.query(`UPDATE driver SET otp=${a} WHERE email ="${email}"`, function (err) {
+      conn.query(`UPDATE identities SET otp=${a} WHERE email ="${email}"`, function (err) {
         if (err) {
           res.send({ result: err });
         } else {
-          // OTP update successful, send email
-          const transporter = nodemailer.createTransport({
-            port: usePort, // true for 465, false for other ports
-            host: useSmtp,
-            auth: {
-              user: "donotreply@dwellfox.com",
-              pass: "*rZ2ifIA5Lv",
-            },
-            secure: true,
-          });
-          transporter.sendMail(mailData, function (err, info) {
-            if (err) {
-              console.log(err);
-              return res.status(500).json({status:"500", error: 'Sending Failed!' });
-            } else {
-              return res.status(200).json({ status:"200", message: 'Successfully Sent!' });
-            }
-          });
+          res.send({ result: "update successfull" });
+        }
+
+      });
+      const transporter = nodemailer.createTransport({
+        port: usePort, // true for 465, false for other ports
+        host: useSmtp,
+        auth: {
+          user: "donotreply@bumbbl.com",
+          pass: "Shipment@4321",
+        },
+        secure: true,
+      });
+      transporter.sendMail(mailData, function (err, info) {
+        if (err) {
+          console.log(err);
+          res.send(`{"message":"Sending Failed!"}`);
+        } else {
+          res.send(`{"message":"Successfully Sent!"}`);
         }
       });
-
       pool.releaseConnection(conn);
-    })
+    }
   })
+
 });
 
-//****************Verify*********************//
+
+
+
 
 Router.post('/verify', async (req, res) => {
   pool.getConnection(async (err, conn) => {
@@ -211,7 +458,7 @@ Router.post('/verify', async (req, res) => {
   })
 });
 
-//////
+////////
 
 
 Router.post('/verify-otp', (req, res) => {

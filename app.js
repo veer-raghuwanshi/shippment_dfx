@@ -16,6 +16,9 @@ import login1Route from './routes/login1.js'
 import createShipmentRoute from './routes/createShipment.js'
 import helperRoute from './routes/helper.js'
 import vehicalRoute from './routes/vehical.js'
+import customerRoute from './routes/customer.js'
+import pickupcreationRoute from './routes/pickupcreation.js'
+import deliverycreationRoute from './routes/deliverycreation.js'
 
 
 
@@ -46,6 +49,9 @@ app.use('/api',driverRoute);
 app.use('/api',createShipmentRoute);
 app.use('/api',helperRoute);
 app.use('/api',vehicalRoute);
+app.use('/api',customerRoute);
+app.use('/api',pickupcreationRoute);
+app.use('/api',deliverycreationRoute);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}.`);
