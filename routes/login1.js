@@ -310,4 +310,25 @@ pool.getConnection(async (err, conn) => {
 
 });
 
+
+
+Router.post('/change-password1', async (req, res) => {
+   const { email, newPassword, confirmPassword } = req.body;
+   if (newPassword !== confirmPassword) {
+     return res.status(400).json({ status:"400" , error: 'Passwords do not match' });
+   }
+   try {
+     // Check if the email exists in the database
+     const [users] = await pool.query('SELECT * FROM driver WHERE email = ?', [email]);
+     if (users.length === 0) {
+       return res.status(404).json({status:"404", error: 'User not found' });
+     }
+     // Update the user's password in the database
+     await pool.query('UPDATE driver SET password = ? WHERE email = ?', [newPassword, email]);
+     res.status(200).json({status:"200", message: 'Password updated successfully' });
+   } catch (error) {
+     console.error('Error changing password:', error);
+     res.status(500).json({status:"500", error: 'Error changing password' });
+   }
+ });
 export default Router;
