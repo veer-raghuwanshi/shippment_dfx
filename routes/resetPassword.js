@@ -17,94 +17,32 @@ const pool = mysql.createPool({
   database: 'u219507986_shipingnew'
 });
 
-Router.post('/forgetpass', async (req, res) => {
-  pool.getConnection(async (err, conn) => {
-    if (err) {
-      console.log(err);
-      res.status(500).send('Server Error');
-    }
-    else {
-      var email = req.body.email;
-      conn.query("SELECT * FROM driver WHERE email=?", email, function (err, data) {
-        if (err) {
-          console.log(err);
-          res.send({ result: "err", Error: err });
-        } else {
-          res.send({ result: data });
-        }
-
-      });
-      pool.releaseConnection(conn);
-    }
-  })
-
-});
-
-//*****************OTPsend*********************/
-
-// Router.post('/otpsend', async (req, res) => {
-
+// Router.post('/forgetpass', async (req, res) => {
 //   pool.getConnection(async (err, conn) => {
 //     if (err) {
 //       console.log(err);
 //       res.status(500).send('Server Error');
 //     }
 //     else {
-//       var otp = Math.random() * (1000000 - 99999) + 99999;
-
-//       var random = parseInt(otp);
-//       var a = random.toString();
-//       console.log(a);
-
-//       var email = req.body.email;
-
-//       var clientPort = 465;
-//       var clientSmtp = 'smtp.hostinger.com';
-//     //   var clientReply = 'Dwellfox'
-  
-//       var useSmtp = clientSmtp ? clientSmtp : 'smtp.hostinger.com';
-//       var usePort = clientPort ? clientPort : 465;
-
-//       var mailData = {
-//         from: {
-//             name:'New Inquiry From Dwellfox.com',
-//             address:'donotreply@dwellfox.com'
-//       },
-//         to: email,
-//         subject: "Otp for forget password is: ",
-//         html: "<h3>OTP for account verification is </h3>" + "<h1 style='font-weight:bold;'>" + a + "</h1>"
-//       };
-
-//       conn.query(`UPDATE identities SET otp=${a} WHERE email ="${email}"`, function (err) {
-//         if (err) {
-//           res.send({ result: err });
-//         } else {
-//           res.send({ result: "update successfull" });
-//         }
-
-//       });
-//       const transporter = nodemailer.createTransport({
-//         port: usePort, // true for 465, false for other ports
-//         host: useSmtp,
-//         auth: {
-//           user: "donotreply@dwellfox.com",
-//           pass: "*rZ2ifIA5Lv",
-//         },
-//         secure: true,
-//       });
-//       transporter.sendMail(mailData, function (err, info) {
+//       var username = req.body.username;
+//       conn.query("SELECT * FROM driver WHERE email=?", username, function (err, data) {
 //         if (err) {
 //           console.log(err);
-//           res.send(`{"message":"Sending Failed!"}`);
+//           res.send({ result: "err", Error: err });
 //         } else {
-//           res.send(`{"message":"Successfully Sent!"}`);
+//           res.send({ result: data });
 //         }
+
 //       });
 //       pool.releaseConnection(conn);
 //     }
 //   })
 
 // });
+
+
+
+
 
 // Router.post('/otpsend', async (req, res) => {
 //   const { email } = req.body;
@@ -184,11 +122,8 @@ Router.post('/forgetpass', async (req, res) => {
 //   })
 // });
 
-//****************Verify*********************//
 
-Router.post('/otpsend', async (req, res) => {
-  const {email} = req.body;
-
+Router.post('/otpsendusrname', async (req, res) => {
   pool.getConnection(async (err, conn) => {
     if (err) {
       console.log(err);
@@ -196,30 +131,24 @@ Router.post('/otpsend', async (req, res) => {
     }
     else {
       var otp = Math.random() * (1000000 - 99999) + 99999;
-
       var random = parseInt(otp);
       var a = random.toString();
       console.log(a);
-
-      var email = req.body.email;
-
+      var username = req.body.username;
       var clientPort = 465;
       var clientSmtp = 'smtp.hostinger.com';
     //   var clientReply = 'Dwellfox'
-  
       var useSmtp = clientSmtp ? clientSmtp : 'smtp.hostinger.com';
       var usePort = clientPort ? clientPort : 465;
-
       var mailData = {
         from: {
             name:'New Inquiry From Dwellfox.com',
             address:'donotreply@bumbbl.com'
       },
-        to: email,
+        to: username,
         subject: "Otp for forget password is: ",
         html: `<!DOCTYPE html>
         <html>
-        
         <head>
            <meta charset="utf-8" />
            <title>A simple, clean, and responsive HTML invoice template</title>
@@ -227,7 +156,6 @@ Router.post('/otpsend', async (req, res) => {
               h1, h2, h3, h4, h5, h6, p {
                  font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
               }
-        
               .invoice-box {
                  max-width: 700px;
                  margin: auto;
@@ -236,10 +164,8 @@ Router.post('/otpsend', async (req, res) => {
                  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
                  font-size: 16px;
                  line-height: 24px;
-        
                  color: #555;
               }
-        
               .tabledata tr th {
                  /* border: 1px solid #000; */
                  font-size: 18px;
@@ -247,7 +173,6 @@ Router.post('/otpsend', async (req, res) => {
                  color: #000;
                  font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
               }
-        
               .tabledata tr td {
                  border: 1px solid #BCCCFF;
                  padding: 10px;
@@ -255,32 +180,26 @@ Router.post('/otpsend', async (req, res) => {
                  color: #000;
                  font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
               }
-        
               .invoice-box table {
                  width: 100%;
                  line-height: inherit;
                  text-align: left;
               }
-        
               .invoice-box table td {
                  /* padding: 5px; */
                  vertical-align: top;
               }
-        
               /* .invoice-box table tr td:nth-child(2) {
                     text-align: right;
                  } */
               .invoice-box table tr.top table td {
                  padding-bottom: 20px;
               }
-        
               .invoice-box table tr.top table td.title {
                  font-size: 45px;
                  line-height: 45px;
                  color: #333;
-        
               }
-        
               /* .invoice-box table tr.information table td {
                     padding-bottom: 40px;
                  } */
@@ -289,7 +208,6 @@ Router.post('/otpsend', async (req, res) => {
                  border-bottom: 1px solid #ddd;
                  font-weight: bold;
               }
-        
               .invoice-box table tr.details td {
                  padding-bottom: 20px;
               }
@@ -341,7 +259,6 @@ Router.post('/otpsend', async (req, res) => {
                  font-weight: bold;
                  color: #000;
                  text-align: right;
-        
               }
            </style>
         </head>
@@ -366,16 +283,13 @@ Router.post('/otpsend', async (req, res) => {
                     <td colspan="2">
                        <table style=" margin-bottom: 0; margin-top: 10px;">
                           <tr>
-        
-        
                              <td style="vertical-align: middle; color: #000;">
-                                <h4 style="margin-bottom: 10px;">${email}</h4>
+                                <h4 style="margin-bottom: 10px;">${username}</h4>
                                 <h3 style="margin-bottom: 10px;">Your Verification Code is</h3>
                                 <h2 style="margin-bottom: 10px;">${a}</h2>
                             </td>
                              <td style="text-align: end; padding-top: 20px;">
                                 <img src="Login-amico.png" />
-                                    
                              </td>
                           </tr>
                        </table>
@@ -387,24 +301,20 @@ Router.post('/otpsend', async (req, res) => {
                     <td style="color:#000">
                        <p style=" margin-top: 0;">Please enter this code in the designated field on our website/app to complete the verification process. This step is crucial in protecting your account from unauthorized access and securing your personal information.
                         If you did not request this verification code, please ignore this email. </p>
-        
                        <h3 style="margin-bottom: 0; font-weight: 500;">Best regards,</h3>
                        <h3 style="margin-top: 5px;">P & G Truckers Team</h3>
-                       
                     </td>
                  </tr>
               </table>
            </body>
         </html>`
       };
-
-      conn.query(`UPDATE identities SET otp=${a} WHERE email ="${email}"`, function (err) {
+      conn.query(`UPDATE identities SET otp=${a} WHERE username ="${username}"`, function (err) {
         if (err) {
           res.send({ result: err });
         } else {
-          res.send({ result: "update successfull" });
+          res.send({ result: "Successfully Sent!!!" });
         }
-
       });
       const transporter = nodemailer.createTransport({
         port: usePort, // true for 465, false for other ports
@@ -426,11 +336,11 @@ Router.post('/otpsend', async (req, res) => {
       pool.releaseConnection(conn);
     }
   })
-
 });
 
 
 
+//****************Verify*********************//
 
 
 Router.post('/verify', async (req, res) => {
