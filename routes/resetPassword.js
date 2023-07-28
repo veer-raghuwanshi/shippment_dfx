@@ -343,41 +343,41 @@ Router.post('/otpsendusrname', async (req, res) => {
 //****************Verify*********************//
 
 
-Router.post('/verify', async (req, res) => {
-  pool.getConnection(async (err, conn) => {
-    if (err) {
-      console.log(err);
-      res.status(500).send('Server Error');
-    }
-    else {
-      var username = req.body.username;
-      var otp = req.body.otp;
+// Router.post('/verify', async (req, res) => {
+//   pool.getConnection(async (err, conn) => {
+//     if (err) {
+//       console.log(err);
+//       res.status(500).send('Server Error');
+//     }
+//     else {
+//       var username = req.body.username;
+//       var otp = req.body.otp;
 
-      conn.query(`SELECT * FROM identities WHERE username="${username}" AND otp=${otp}`, function (err, otp) {
-        if (err) {
-          res.send({ result: err });
-        } else {
-          if (otp.length > 0)
-            res.send({ message: 'OTP verified successfully' });
-          else
-            res.send({ error: 'Invalid OTP' });
-        }
-      });
-      pool.releaseConnection(conn);
-    }
-  })
-});
+//       conn.query(`SELECT * FROM identities WHERE username="${username}" AND otp=${otp}`, function (err, otp) {
+//         if (err) {
+//           res.send({ result: err });
+//         } else {
+//           if (otp.length > 0)
+//             res.send({ message: 'OTP verified successfully' });
+//           else
+//             res.send({ error: 'Invalid OTP' });
+//         }
+//       });
+//       pool.releaseConnection(conn);
+//     }
+//   })
+// });
 
 ////////
 
 
 Router.post('/verify-otp', (req, res) => {
-  const { otp, email } = req.body; // Assuming the phone number and OTP are sent in the request body
+  const { otp, username } = req.body; // Assuming the phone number and OTP are sent in the request body
 
   // Check if the OTP is valid for the given email
-  const query = 'SELECT * FROM driver WHERE otp = ? AND email = ?';
+  const query = 'SELECT * FROM identities WHERE otp = ? AND username = ?';
 
-  pool.query(query, [otp, email], (error, results) => {
+  pool.query(query, [otp, username], (error, results) => {
     if (error) {
       console.error('Error verifying OTP:', error);
       res.status(500).json({ status: "500", error: 'Error verifying OTP' });
