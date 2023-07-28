@@ -350,10 +350,10 @@ Router.post('/verify', async (req, res) => {
       res.status(500).send('Server Error');
     }
     else {
-      var email = req.body.email;
+      var username = req.body.username;
       var otp = req.body.otp;
 
-      conn.query(`SELECT * FROM driver WHERE email="${email}" AND otp=${otp}`, function (err, otp) {
+      conn.query(`SELECT * FROM identities WHERE username="${username}" AND otp=${otp}`, function (err, otp) {
         if (err) {
           res.send({ result: err });
         } else {
