@@ -19,6 +19,7 @@ import vehicalRoute from './routes/vehical.js'
 import customerRoute from './routes/customer.js'
 import pickupcreationRoute from './routes/pickupcreation.js'
 import deliverycreationRoute from './routes/deliverycreation.js'
+import paymentRoute from './routes/Payment.js'
 
 
 
@@ -52,6 +53,7 @@ app.use('/api',vehicalRoute);
 app.use('/api',customerRoute);
 app.use('/api',pickupcreationRoute);
 app.use('/api',deliverycreationRoute);
+app.use('/api',paymentRoute);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}.`);
