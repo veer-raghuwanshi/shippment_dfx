@@ -1,9 +1,6 @@
 import express from "express";
-import jwt from "jsonwebtoken";
 const Router = express.Router();
 import mysql from 'mysql'
-import md5 from 'md5'
-import nodemailer from "nodemailer";
 ​
 ​
 // MySQL database configuration
