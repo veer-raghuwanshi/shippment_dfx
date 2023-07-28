@@ -45,13 +45,15 @@ Router.post('/addvehical', async (req, res) => {
             
             const  randomId = generateRandomId();
               const name = req.body.name;
-              const email = req.body.email;
+            //   const email = req.body.email;
               const vehicalplate = req.body.vehicalplate;
-              const phone = req.body.phone;
+            //   const phone = req.body.phone;
 
+            // '${email}'
+            // ,'${phone}'
         
-            const sql = `INSERT INTO vehical (id,name,email,vehicalplate,phone)
-            VALUES (${randomId},'${name}','${email}','${vehicalplate}','${phone}')`
+            const sql = `INSERT INTO vehical (id,name,vehicalplate)
+            VALUES (${randomId},'${name}','${vehicalplate}')`
             // const values = [randomId];
               const result = await query(sql, conn);
               if(result){
@@ -76,9 +78,10 @@ Router.post('/updatevehical',async (req, res) => {
           else{
             const id = req.body.id;
             const name = req.body.name;
-            const email = req.body.email;
+            // const email = req.body.email;
             const vehicalplate = req.body.vehicalplate;
-              const sql = `UPDATE vehical SET name="${name}", email="${email}", vehicalplate="${vehicalplate}" WHERE id=${id}`;
+            // , email="${email}"
+              const sql = `UPDATE vehical SET name="${name}", vehicalplate="${vehicalplate}" WHERE id=${id}`;
               const result = await query(sql, conn);
               if(result){
                   res.send({result:"successfully updated"});     
