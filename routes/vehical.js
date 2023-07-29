@@ -47,13 +47,16 @@ Router.post('/addvehical', async (req, res) => {
               const name = req.body.name;
             //   const email = req.body.email;
               const vehicalplate = req.body.vehicalplate;
+              const DateAndTime = req.body.DateAndTime;
+
+
             //   const phone = req.body.phone;
 
             // '${email}'
             // ,'${phone}'
         
-            const sql = `INSERT INTO vehical (id,name,vehicalplate)
-            VALUES (${randomId},'${name}','${vehicalplate}')`
+            const sql = `INSERT INTO vehical (id,name,vehicalplate,DateAndTime)
+            VALUES (${randomId},'${name}','${vehicalplate}','${DateAndTime}')`
             // const values = [randomId];
               const result = await query(sql, conn);
               if(result){
