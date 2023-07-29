@@ -48,10 +48,12 @@ Router.post('/addhelper', async (req, res) => {
               const email = req.body.email;
               const address = req.body.address;
               const phone = req.body.phone;
+              const DateAndTime = req.body.DateAndTime;
+
 
         
-            const sql = `INSERT INTO helper (id,name,email,address,phone)
-            VALUES (${randomId},'${name}','${email}','${address}','${phone}')`
+            const sql = `INSERT INTO helper (id,name,email,address,phone,DateAndTime)
+         VALUES (${randomId},'${name}','${email}','${address}','${phone}','${DateAndTime}')`
             // const values = [randomId];
               const result = await query(sql, conn);
               if(result){
