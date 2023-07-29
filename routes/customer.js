@@ -60,7 +60,7 @@ Router.post('/addcustomer', async (req, res) => {
 
         
             const sql = `INSERT INTO createcustomer (id,name,email,phone,altphone,address,DateAndTime)
-            VALUES (${randomId},'${name}','${email}','${phone}','${altphone}','${address}','${DateAndTime},)`
+         VALUES (${randomId},'${name}','${email}','${phone}','${altphone}','${address}','${DateAndTime}')`
             // const values = [randomId];
               const result = await query(sql, conn);
               if(result){
