@@ -53,14 +53,13 @@ Router.post('/addcustomer', async (req, res) => {
               const name = req.body.name;
               const email = req.body.email;
               const phone = req.body.phone;
-              const altphone = req.body.altphone;
               const address = req.body.address;
               const DateAndTime = req.body.DateAndTime;
 
 
         
             const sql = `INSERT INTO createcustomer (id,name,email,phone,altphone,address,DateAndTime)
-         VALUES (${randomId},'${name}','${email}','${phone}','${altphone}','${address}','${DateAndTime}')`
+         VALUES (${randomId},'${name}','${email}','${phone}','${address}','${DateAndTime}')`
             // const values = [randomId];
               const result = await query(sql, conn);
               if(result){
@@ -87,11 +86,9 @@ Router.post('/updatecustomer',async (req, res) => {
             const name = req.body.name;
             const email = req.body.email;
             const phone = req.body.phone;
-            const altphone = req.body.altphone;
             const address = req.body.address;
 
-
-              const sql = `UPDATE createcustomer SET name="${name}", email="${email}", phone="${phone}",altphone="${altphone}" address ="${address}" WHERE id=${id}`;
+              const sql = `UPDATE createcustomer SET name="${name}", email="${email}", phone="${phone}", address ="${address}" WHERE id=${id}`;
               const result = await query(sql, conn);
               if(result){
                   res.send({result:"successfully updated"});     
