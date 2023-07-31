@@ -8,7 +8,7 @@ import fs from "fs";
 
 
 
-Router.get('/totalshipmentrecord', async (req, res) => {
+Router.get('/pickupcreation', async (req, res) => {
     pool.getConnection(async (err, conn) => {
         if (err) {
             console.log(err);
