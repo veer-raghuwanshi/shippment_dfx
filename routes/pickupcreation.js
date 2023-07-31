@@ -16,7 +16,7 @@ Router.get('/totalshipmentrecord', async (req, res) => {
           } 
           else{
               const id = req.body.id;
-              const sql = `SELECT * from totalshipmentrecord where id = ${id} `;
+              const sql = 'SELECT * from pickupcreation';
               const result = await query(sql, conn);
             //   console.log(result)
               if(result){
